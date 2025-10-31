@@ -3,6 +3,9 @@ import { Link } from 'react-router-dom';
 import { useAuth } from '../hooks/useAuth';
 import { competitionsAPI } from '../services/api';
 import CompetitionCard from '../components/CompetitionCard';
+import LiquidEther from '../components/LiquidEther';
+import PixelCard from '../components/PixelCard';
+import { demoCompetitions } from '../data/demoCompetitions';
 import './Home.css';
 
 const Home = () => {
@@ -19,11 +22,20 @@ const Home = () => {
     try {
       setLoading(true);
       const response = await competitionsAPI.getOngoing();
-      setOngoingCompetitions(response.data.results || response.data);
+      const competitions = response.data.results || response.data;
+      
+      // If no competitions from API, use demo data
+      if (!competitions || competitions.length === 0) {
+        setOngoingCompetitions(demoCompetitions.filter(c => c.status === 'ongoing'));
+      } else {
+        setOngoingCompetitions(competitions);
+      }
       setError(null);
     } catch (err) {
       console.error('Error fetching competitions:', err);
-      setError('Failed to load competitions');
+      // On error, use demo competitions
+      setOngoingCompetitions(demoCompetitions.filter(c => c.status === 'ongoing'));
+      setError(null); // Don't show error if we have demo data
     } finally {
       setLoading(false);
     }
@@ -32,8 +44,28 @@ const Home = () => {
   return (
     <div className="home-page">
       {/* Hero Section */}
-      <section className="hero-section">
-        <div className="container">
+      <section className="hero-section" style={{ position: 'relative' }}>
+        {/* LiquidEther Background */}
+        <div style={{ position: 'absolute', top: 0, left: 0, width: '100%', height: '100%', zIndex: 0 }}>
+          <LiquidEther
+            colors={['#5227FF', '#FF9FFC', '#B19EEF']}
+            mouseForce={10}
+            cursorSize={100}
+            isViscous={false}
+            viscous={30}
+            iterationsViscous={32}
+            iterationsPoisson={32}
+            resolution={0.5}
+            isBounce={false}
+            autoDemo={true}
+            autoSpeed={0.5}
+            autoIntensity={2.2}
+            takeoverDuration={0.25}
+            autoResumeDelay={3000}
+            autoRampDuration={0.6}
+          />
+        </div>
+        <div className="container" style={{ position: 'relative', zIndex: 1 }}>
           <div className="hero-content">
             <h1 className="hero-title">
               Welcome to <span className="gradient-text">MLBattle</span>
@@ -99,59 +131,59 @@ const Home = () => {
         <div className="container">
           <h2 className="section-title">Why MLBattle?</h2>
           <div className="features-grid">
-            <div className="feature-card">
+            <PixelCard variant="blue" className="feature-card">
               <div className="feature-icon">🔗</div>
               <h3 className="feature-title">Kaggle Integration</h3>
               <p className="feature-description">
                 Seamlessly sync your Kaggle submissions and track your progress
                 across all competitions in one place.
               </p>
-            </div>
+            </PixelCard>
 
-            <div className="feature-card">
+            <PixelCard variant="pink" className="feature-card">
               <div className="feature-icon">📊</div>
               <h3 className="feature-title">Real-time Leaderboards</h3>
               <p className="feature-description">
                 Watch live updates as competitors submit and climb the rankings
                 with WebSocket-powered leaderboards.
               </p>
-            </div>
+            </PixelCard>
 
-            <div className="feature-card">
+            <PixelCard variant="yellow" className="feature-card">
               <div className="feature-icon">🎮</div>
               <h3 className="feature-title">ELO Rating System</h3>
               <p className="feature-description">
                 Track your skill progression with our dynamic ELO rating system
                 that adapts to competition size and difficulty.
               </p>
-            </div>
+            </PixelCard>
 
-            <div className="feature-card">
+            <PixelCard variant="blue" className="feature-card">
               <div className="feature-icon">📈</div>
               <h3 className="feature-title">Progress Analytics</h3>
               <p className="feature-description">
                 Visualize your rating history, submission trends, and competition
                 performance with detailed charts and graphs.
               </p>
-            </div>
+            </PixelCard>
 
-            <div className="feature-card">
+            <PixelCard variant="pink" className="feature-card">
               <div className="feature-icon">🏅</div>
               <h3 className="feature-title">Tier System</h3>
               <p className="feature-description">
                 Climb through ranks from Novice to Grandmaster as you improve
                 your machine learning skills and compete.
               </p>
-            </div>
+            </PixelCard>
 
-            <div className="feature-card">
+            <PixelCard variant="yellow" className="feature-card">
               <div className="feature-icon">👥</div>
               <h3 className="feature-title">Community</h3>
               <p className="feature-description">
                 Join a vibrant community of data scientists and machine learning
                 enthusiasts passionate about competition.
               </p>
-            </div>
+            </PixelCard>
           </div>
         </div>
       </section>

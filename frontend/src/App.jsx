@@ -1,6 +1,7 @@
 import React from 'react';
 import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
 import { useAuth } from './hooks/useAuth';
+import ClickSpark from './components/ClickSpark';
 import './App.css';
 
 // Components
@@ -34,6 +35,13 @@ const ProtectedRoute = ({ children }) => {
 function App() {
   return (
     <Router>
+      <ClickSpark
+  sparkColor='#fff'
+  sparkSize={10}
+  sparkRadius={15}
+  sparkCount={8}
+  duration={400}
+>
       <div className="app">
         <Navbar />
         <main className="main-content">
@@ -63,6 +71,7 @@ function App() {
         </main>
         <Footer />
       </div>
+      </ClickSpark>
     </Router>
   );
 }
