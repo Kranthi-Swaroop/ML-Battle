@@ -90,6 +90,33 @@ export const usersAPI = {
     api.patch(`/users/${id}/`, data),
 };
 
+// Competition Events API
+export const competitionEventsAPI = {
+  getAll: (params) =>
+    api.get('/competitions/events/', { params }),
+  
+  getById: (slug) =>
+    api.get(`/competitions/events/${slug}/`),
+  
+  getFeatured: () =>
+    api.get('/competitions/events/featured/'),
+  
+  getCompetitions: (slug) =>
+    api.get(`/competitions/events/${slug}/competitions/`),
+  
+  getOverallLeaderboard: (slug) =>
+    api.get(`/competitions/events/${slug}/overall_leaderboard/`),
+  
+  create: (data) =>
+    api.post('/competitions/events/', data),
+  
+  update: (slug, data) =>
+    api.patch(`/competitions/events/${slug}/`, data),
+  
+  delete: (slug) =>
+    api.delete(`/competitions/events/${slug}/`),
+};
+
 // Competitions API
 export const competitionsAPI = {
   getAll: (params) =>
@@ -121,6 +148,25 @@ export const competitionsAPI = {
   
   delete: (id) =>
     api.delete(`/competitions/${id}/`),
+  
+  searchKaggle: (searchTerm, page = 1) =>
+    api.get('/competitions/search_kaggle/', { params: { q: searchTerm, page } }),
+  
+  importFromKaggle: (kaggleId, eventId = null, scoringConfig = {}) =>
+    api.post('/competitions/import_from_kaggle/', { 
+      kaggle_id: kaggleId,
+      event_id: eventId,
+      higher_is_better: scoringConfig.higher_is_better ?? true,
+      metric_min_value: scoringConfig.metric_min_value ?? 0.0,
+      metric_max_value: scoringConfig.metric_max_value ?? 1.0,
+      points_for_perfect_score: scoringConfig.points_for_perfect_score ?? 100.0
+    }),
+  
+  fetchKaggleLeaderboard: (id) =>
+    api.post(`/competitions/${id}/fetch_kaggle_leaderboard/`),
+  
+  fetchKaggleSubmissions: (id) =>
+    api.post(`/competitions/${id}/fetch_kaggle_submissions/`),
 };
 
 // Submissions API
@@ -135,13 +181,13 @@ export const submissionsAPI = {
 // Leaderboard API
 export const leaderboardAPI = {
   getAll: (params) =>
-    api.get('/leaderboard/', { params }),
+    api.get('/leaderboard/', { params: { ...params, page_size: 10000 } }),
   
   getByCompetition: (competitionId) =>
-    api.get('/leaderboard/', { params: { competition: competitionId } }),
+    api.get('/leaderboard/', { params: { competition: competitionId, page_size: 10000 } }),
   
   getByUser: (userId) =>
-    api.get('/leaderboard/', { params: { user: userId } }),
+    api.get('/leaderboard/', { params: { user: userId, page_size: 10000 } }),
 };
 
 // Ratings API

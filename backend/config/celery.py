@@ -18,9 +18,9 @@ app.autodiscover_tasks()
 
 # Celery Beat Schedule
 app.conf.beat_schedule = {
-    'fetch-kaggle-leaderboards': {
-        'task': 'apps.submissions.tasks.fetch_all_active_competitions',
-        'schedule': 300.0,  # Every 5 minutes
+    'sync-kaggle-leaderboard-auto': {
+        'task': 'apps.competitions.tasks.sync_kaggle_leaderboard_auto',
+        'schedule': 300.0,  # Every 5 minutes - Fetch, CSV, Update DB, Delete CSV
     },
     'update-competition-status': {
         'task': 'apps.competitions.tasks.update_competition_statuses',

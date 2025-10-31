@@ -12,11 +12,12 @@ class UserSerializer(serializers.ModelSerializer):
         fields = [
             'id', 'username', 'email', 'elo_rating', 'highest_rating',
             'competitions_participated', 'kaggle_username', 'bio',
-            'avatar_url', 'rating_tier', 'created_at', 'updated_at'
+            'avatar_url', 'rating_tier', 'is_staff', 'is_superuser',
+            'created_at', 'updated_at'
         ]
         read_only_fields = [
             'id', 'elo_rating', 'highest_rating', 'competitions_participated',
-            'created_at', 'updated_at'
+            'is_staff', 'is_superuser', 'created_at', 'updated_at'
         ]
 
 
@@ -53,11 +54,12 @@ class UserProfileSerializer(serializers.ModelSerializer):
         fields = [
             'id', 'username', 'email', 'elo_rating', 'highest_rating',
             'competitions_participated', 'kaggle_username', 'bio',
-            'avatar_url', 'rating_tier', 'date_joined', 'created_at', 'updated_at'
+            'avatar_url', 'rating_tier', 'is_staff', 'is_superuser',
+            'date_joined', 'created_at', 'updated_at'
         ]
         read_only_fields = [
             'id', 'elo_rating', 'highest_rating', 'competitions_participated',
-            'date_joined', 'created_at', 'updated_at'
+            'is_staff', 'is_superuser', 'date_joined', 'created_at', 'updated_at'
         ]
 
 

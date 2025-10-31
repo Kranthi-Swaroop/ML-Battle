@@ -43,8 +43,8 @@ const Navbar = () => {
             <Link to="/" className="navbar-link" onClick={closeMobileMenu}>
               Home
             </Link>
-            <Link to="/competitions" className="navbar-link" onClick={closeMobileMenu}>
-              Competitions
+            <Link to="/events" className="navbar-link" onClick={closeMobileMenu}>
+              Events
             </Link>
           </div>
 

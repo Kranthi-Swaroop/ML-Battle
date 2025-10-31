@@ -1,41 +1,28 @@
 import React, { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { useAuth } from '../hooks/useAuth';
-import { competitionsAPI } from '../services/api';
-import CompetitionCard from '../components/CompetitionCard';
-import LiquidEther from '../components/LiquidEther';
-import PixelCard from '../components/PixelCard';
-import { demoCompetitions } from '../data/demoCompetitions';
+import { competitionEventsAPI } from '../services/api';
 import './Home.css';
 
 const Home = () => {
   const { isAuthenticated, user } = useAuth();
-  const [ongoingCompetitions, setOngoingCompetitions] = useState([]);
+  const [featuredEvents, setFeaturedEvents] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
 
   useEffect(() => {
-    fetchOngoingCompetitions();
+    fetchFeaturedEvents();
   }, []);
 
-  const fetchOngoingCompetitions = async () => {
+  const fetchFeaturedEvents = async () => {
     try {
       setLoading(true);
-      const response = await competitionsAPI.getOngoing();
-      const competitions = response.data.results || response.data;
-      
-      // If no competitions from API, use demo data
-      if (!competitions || competitions.length === 0) {
-        setOngoingCompetitions(demoCompetitions.filter(c => c.status === 'ongoing'));
-      } else {
-        setOngoingCompetitions(competitions);
-      }
+      const response = await competitionEventsAPI.getFeatured();
+      setFeaturedEvents(response.data.results || response.data);
       setError(null);
     } catch (err) {
-      console.error('Error fetching competitions:', err);
-      // On error, use demo competitions
-      setOngoingCompetitions(demoCompetitions.filter(c => c.status === 'ongoing'));
-      setError(null); // Don't show error if we have demo data
+      console.error('Error fetching events:', err);
+      setError('Failed to load events');
     } finally {
       setLoading(false);
     }
@@ -80,14 +67,14 @@ const Home = () => {
                   <Link to="/register" className="btn btn-primary btn-lg">
                     Get Started
                   </Link>
-                  <Link to="/competitions" className="btn btn-secondary btn-lg">
-                    Browse Competitions
+                  <Link to="/events" className="btn btn-secondary btn-lg">
+                    Browse Events
                   </Link>
                 </>
               ) : (
                 <>
-                  <Link to="/competitions" className="btn btn-primary btn-lg">
-                    View Competitions
+                  <Link to="/events" className="btn btn-primary btn-lg">
+                    View Events
                   </Link>
                   <Link to="/profile" className="btn btn-secondary btn-lg">
                     My Profile
@@ -188,12 +175,12 @@ const Home = () => {
         </div>
       </section>
 
-      {/* Active Competitions Section */}
+      {/* Featured Events Section */}
       <section className="competitions-section">
         <div className="container">
           <div className="section-header">
-            <h2 className="section-title">Active Competitions</h2>
-            <Link to="/competitions" className="view-all-link">
+            <h2 className="section-title">Featured Events</h2>
+            <Link to="/events" className="view-all-link">
               View All →
             </Link>
           </div>
@@ -201,22 +188,43 @@ const Home = () => {
           {loading ? (
             <div className="loading-container">
               <div className="spinner"></div>
-              <p>Loading competitions...</p>
+              <p>Loading events...</p>
             </div>
           ) : error ? (
             <div className="alert alert-error">{error}</div>
-          ) : ongoingCompetitions.length === 0 ? (
+          ) : featuredEvents.length === 0 ? (
             <div className="empty-state">
               <div className="empty-state-icon">🏆</div>
-              <h3 className="empty-state-title">No Active Competitions</h3>
+              <h3 className="empty-state-title">No Featured Events</h3>
               <p className="empty-state-description">
-                Check back soon for new competitions to join!
+                Check back soon for new events to join!
               </p>
             </div>
           ) : (
             <div className="competitions-grid">
-              {ongoingCompetitions.slice(0, 3).map((competition) => (
-                <CompetitionCard key={competition.id} competition={competition} />
+              {featuredEvents.slice(0, 3).map((event) => (
+                <Link key={event.id} to={`/events/${event.slug}`} className="event-card-link">
+                  <div className="event-card-home">
+                    {event.banner_image && (
+                      <div className="event-card-banner">
+                        <img src={event.banner_image} alt={event.title} />
+                      </div>
+                    )}
+                    <div className="event-card-content">
+                      <h3>{event.title}</h3>
+                      <p className="event-card-desc">
+                        {event.description?.substring(0, 100)}...
+                      </p>
+                      <div className="event-card-meta">
+                        <span>🏆 {event.total_prize_pool || 'TBD'}</span>
+                        <span>📊 {event.competition_count || 0} competitions</span>
+                      </div>
+                      <span className={`event-status-badge status-${event.status}`}>
+                        {event.status}
+                      </span>
+                    </div>
+                  </div>
+                </Link>
               ))}
             </div>
           )}
