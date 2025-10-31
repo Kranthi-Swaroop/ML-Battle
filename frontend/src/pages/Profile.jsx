@@ -4,6 +4,7 @@ import { usersAPI, submissionsAPI } from '../services/api';
 import { getRatingTier } from '../utils/constants';
 import RatingChart from '../components/RatingChart';
 import SubmissionHistory from '../components/SubmissionHistory';
+import useCountUp from '../hooks/useCountUp';
 import './Profile.css';
 
 const Profile = () => {
@@ -38,6 +39,12 @@ const Profile = () => {
       setLoading(false);
     }
   };
+
+  // Animated counters - MUST be called before any early returns
+  const animatedRating = useCountUp(user?.elo_rating || 1500, 2000, 0);
+  const animatedHighestRating = useCountUp(user?.highest_rating || user?.elo_rating || 1500, 2000, 0);
+  const animatedCompetitions = useCountUp(user?.competitions_participated || 0, 1500, 0);
+  const animatedSubmissions = useCountUp(submissions.length, 1500, 0);
 
   if (!user) {
     return (
@@ -79,8 +86,8 @@ const Profile = () => {
               <span className="stat-icon">⭐</span>
               <div className="stat-content">
                 <span className="stat-label">Current Rating</span>
-                <span className="stat-value" style={{ color: currentTier.color }}>
-                  {user.elo_rating || 1500}
+                <span className="stat-value animated-number" style={{ color: currentTier.color }}>
+                  {animatedRating}
                 </span>
                 <span className={`stat-change ${ratingChange >= 0 ? 'positive' : 'negative'}`}>
                   {ratingChange > 0 ? '+' : ''}{ratingChange} from start
@@ -95,8 +102,8 @@ const Profile = () => {
               <span className="stat-icon">🏆</span>
               <div className="stat-content">
                 <span className="stat-label">Highest Rating</span>
-                <span className="stat-value">
-                  {user.highest_rating || user.elo_rating || 1500}
+                <span className="stat-value animated-number">
+                  {animatedHighestRating}
                 </span>
               </div>
             </div>
@@ -105,8 +112,8 @@ const Profile = () => {
               <span className="stat-icon">🎯</span>
               <div className="stat-content">
                 <span className="stat-label">Competitions</span>
-                <span className="stat-value">
-                  {user.competitions_participated || 0}
+                <span className="stat-value animated-number">
+                  {animatedCompetitions}
                 </span>
               </div>
             </div>
@@ -115,8 +122,8 @@ const Profile = () => {
               <span className="stat-icon">📊</span>
               <div className="stat-content">
                 <span className="stat-label">Submissions</span>
-                <span className="stat-value">
-                  {submissions.length}
+                <span className="stat-value animated-number">
+                  {animatedSubmissions}
                 </span>
               </div>
             </div>
@@ -173,11 +180,11 @@ const Profile = () => {
                     </div>
                     <div className="performance-item">
                       <span className="perf-label">Total Competitions</span>
-                      <span className="perf-value">{user.competitions_participated || 0}</span>
+                      <span className="perf-value animated-number">{animatedCompetitions}</span>
                     </div>
                     <div className="performance-item">
                       <span className="perf-label">Total Submissions</span>
-                      <span className="perf-value">{submissions.length}</span>
+                      <span className="perf-value animated-number">{animatedSubmissions}</span>
                     </div>
                   </div>
                 </div>
@@ -189,8 +196,8 @@ const Profile = () => {
                       <div className="quick-stat-icon">📈</div>
                       <div className="quick-stat-content">
                         <span className="quick-stat-label">Best Performance</span>
-                        <span className="quick-stat-value">
-                          {user.highest_rating || user.elo_rating || 1500} ELO
+                        <span className="quick-stat-value animated-number">
+                          {animatedHighestRating} ELO
                         </span>
                       </div>
                     </div>

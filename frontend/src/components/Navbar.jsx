@@ -46,6 +46,9 @@ const Navbar = () => {
             <Link to="/events" className="navbar-link" onClick={closeMobileMenu}>
               Events
             </Link>
+            <Link to="/competitions" className="navbar-link" onClick={closeMobileMenu}>
+              Competitions
+            </Link>
           </div>
 
           <div className="navbar-actions">

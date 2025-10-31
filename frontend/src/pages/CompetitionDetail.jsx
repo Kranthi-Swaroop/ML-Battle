@@ -15,7 +15,6 @@ const CompetitionDetail = () => {
   const [error, setError] = useState(null);
   const [registering, setRegistering] = useState(false);
   const [activeTab, setActiveTab] = useState('overview');
-  const [syncing, setSyncing] = useState(false);
 
   const { 
     leaderboard, 
@@ -54,31 +53,6 @@ const CompetitionDetail = () => {
     } finally {
       setRegistering(false);
     }
-  };
-
-  const handleSyncLeaderboard = async () => {
-    if (!window.confirm('Fetch latest leaderboard from Kaggle? This will replace all existing entries.')) {
-      return;
-    }
-
-    try {
-      setSyncing(true);
-      const response = await competitionsAPI.fetchKaggleLeaderboard(id);
-      alert(`Successfully synced ${response.data.entries_created} leaderboard entries from Kaggle!`);
-      // The leaderboard will update automatically via WebSocket
-    } catch (err) {
-      console.error('Error syncing leaderboard:', err);
-      alert(err.response?.data?.error || 'Failed to sync leaderboard from Kaggle');
-    } finally {
-      setSyncing(false);
-    }
-  };
-
-  // Removed: handleSyncSubmissions - Using leaderboard sync instead
-  // The leaderboard sync downloads complete CSV with all entries
-
-  const isAdmin = () => {
-    return user?.is_staff || user?.is_superuser;
   };
 
   if (loading) {
@@ -283,24 +257,6 @@ const CompetitionDetail = () => {
 
           {activeTab === 'leaderboard' && (
             <div className="leaderboard-content">
-              {isAdmin() && competition.kaggle_competition_id && (
-                <div className="leaderboard-actions">
-                  <div className="action-buttons">
-                    <button
-                      className="btn btn-primary"
-                      onClick={handleSyncLeaderboard}
-                      disabled={syncing}
-                    >
-                      {syncing ? 'Syncing...' : '🔄 Sync Leaderboard'}
-                    </button>
-                  </div>
-                  <p className="sync-info">
-                    📊 Downloads complete leaderboard from Kaggle (all 1000+ entries) and updates ranks
-                    <br />
-                    ⚡ Auto-syncs every 5 minutes via Celery task
-                  </p>
-                </div>
-              )}
               <Leaderboard 
                 entries={leaderboard}
                 loading={leaderboardLoading}

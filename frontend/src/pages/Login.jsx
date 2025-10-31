@@ -33,13 +33,12 @@ const Login = () => {
       return;
     }
 
-    const result = await login(formData.username, formData.password);
-    
-    if (result.success) {
+    try {
+      await login(formData.username, formData.password);
       navigate(from, { replace: true });
-    } else {
-      console.error('Login error:', result.error);
-      setError(result.error?.detail || 'Invalid username or password');
+    } catch (err) {
+      console.error('Login error:', err);
+      setError(err.response?.data?.detail || 'Invalid username or password');
     }
   };
 

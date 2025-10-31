@@ -140,6 +140,19 @@ export const competitionsAPI = {
   register: (id) =>
     api.post(`/competitions/${id}/register/`),
   
+  searchKaggle: (searchTerm) =>
+    api.get('/competitions/search_kaggle/', { params: { search: searchTerm } }),
+  
+  importFromKaggle: (kaggleId, eventId, scoringConfig = {}) =>
+    api.post('/competitions/import_from_kaggle/', {
+      kaggle_id: kaggleId,
+      event_id: eventId,
+      ...scoringConfig
+    }),
+  
+  fetchKaggleLeaderboard: (id) =>
+    api.post(`/competitions/${id}/fetch_kaggle_leaderboard/`),
+  
   create: (data) =>
     api.post('/competitions/', data),
   
@@ -148,25 +161,6 @@ export const competitionsAPI = {
   
   delete: (id) =>
     api.delete(`/competitions/${id}/`),
-  
-  searchKaggle: (searchTerm, page = 1) =>
-    api.get('/competitions/search_kaggle/', { params: { q: searchTerm, page } }),
-  
-  importFromKaggle: (kaggleId, eventId = null, scoringConfig = {}) =>
-    api.post('/competitions/import_from_kaggle/', { 
-      kaggle_id: kaggleId,
-      event_id: eventId,
-      higher_is_better: scoringConfig.higher_is_better ?? true,
-      metric_min_value: scoringConfig.metric_min_value ?? 0.0,
-      metric_max_value: scoringConfig.metric_max_value ?? 1.0,
-      points_for_perfect_score: scoringConfig.points_for_perfect_score ?? 100.0
-    }),
-  
-  fetchKaggleLeaderboard: (id) =>
-    api.post(`/competitions/${id}/fetch_kaggle_leaderboard/`),
-  
-  fetchKaggleSubmissions: (id) =>
-    api.post(`/competitions/${id}/fetch_kaggle_submissions/`),
 };
 
 // Submissions API
@@ -181,13 +175,13 @@ export const submissionsAPI = {
 // Leaderboard API
 export const leaderboardAPI = {
   getAll: (params) =>
-    api.get('/leaderboard/', { params: { ...params, page_size: 10000 } }),
+    api.get('/leaderboard/', { params }),
   
   getByCompetition: (competitionId) =>
-    api.get('/leaderboard/', { params: { competition: competitionId, page_size: 10000 } }),
+    api.get('/leaderboard/', { params: { competition: competitionId } }),
   
   getByUser: (userId) =>
-    api.get('/leaderboard/', { params: { user: userId, page_size: 10000 } }),
+    api.get('/leaderboard/', { params: { user: userId } }),
 };
 
 // Ratings API

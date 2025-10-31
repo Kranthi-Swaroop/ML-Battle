@@ -117,17 +117,17 @@
 }
 
 .rank-column {
-  width: 100px;
+  width: 80px;
   text-align: center;
 }
 
 .rank-value {
-  font-size: 1.5rem;
+  font-size: 1.25rem;
   font-weight: 700;
 }
 
 .user-column {
-  width: auto;
+  min-width: 200px;
 }
 
 .user-info {
@@ -171,29 +171,35 @@
   display: inline-block;
 }
 
-.kaggle-badge {
-  font-size: 0.625rem;
-  font-weight: 600;
-  padding: 2px 8px;
-  border-radius: 4px;
-  text-transform: uppercase;
-  letter-spacing: 0.05em;
-  background-color: rgba(32, 201, 151, 0.1);
-  color: #20C997;
-  border: 1px solid #20C997;
-  display: inline-block;
-  margin-left: var(--spacing-xs);
+.rating-column,
+.score-column,
+.submissions-column {
+  text-align: center;
+  width: 120px;
 }
 
-.score-column {
-  text-align: center;
-  width: 150px;
+.rating-value {
+  font-weight: 600;
+  color: var(--primary-color);
 }
 
 .score-value {
-  font-weight: 700;
-  font-size: 1rem;
-  color: var(--primary-color);
+  font-weight: 600;
+  color: var(--text-primary);
+}
+
+.submissions-value {
+  color: var(--text-secondary);
+}
+
+.updated-column {
+  text-align: right;
+  width: 140px;
+}
+
+.updated-value {
+  color: var(--text-secondary);
+  font-size: 0.8125rem;
 }
 
 /* Mobile Responsive */
@@ -206,6 +212,17 @@
     width: 32px;
     height: 32px;
     font-size: 0.875rem;
+  }
+
+  .rating-column,
+  .score-column,
+  .submissions-column,
+  .updated-column {
+    display: none;
+  }
+
+  .user-column {
+    min-width: auto;
   }
 }
 
@@ -222,22 +239,10 @@
   }
 
   .rank-column {
-    width: 70px;
+    width: 60px;
   }
 
   .rank-value {
-    font-size: 1.25rem;
-  }
-
-  .score-column {
-    width: 120px;
-  }
-
-  .score-value {
-    font-size: 0.875rem;
-  }
-
-  .user-info {
-    gap: var(--spacing-sm);
+    font-size: 1rem;
   }
 }

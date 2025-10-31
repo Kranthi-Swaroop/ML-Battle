@@ -22,16 +22,11 @@ const useLeaderboard = (competitionId) => {
     try {
       setLoading(true);
       const response = await leaderboardAPI.getByCompetition(competitionId);
-      // Handle paginated response - extract results array
-      const data = response.data?.results || response.data || [];
-      // Ensure data is an array
-      const entries = Array.isArray(data) ? data : [];
-      setLeaderboard(entries);
+      setLeaderboard(response.data);
       setError(null);
     } catch (err) {
       setError(err);
       console.error('Failed to fetch leaderboard:', err);
-      setLeaderboard([]); // Set empty array on error
     } finally {
       setLoading(false);
     }
@@ -43,9 +38,7 @@ const useLeaderboard = (competitionId) => {
     {
       onMessage: (data) => {
         if (data.type === 'leaderboard_update' || data.type === 'leaderboard_init') {
-          // Ensure entries is an array
-          const entries = Array.isArray(data.data?.entries) ? data.data.entries : [];
-          setLeaderboard(entries);
+          setLeaderboard(data.data.entries);
         }
       },
       autoConnect: !!competitionId,
@@ -70,5 +63,4 @@ const useLeaderboard = (competitionId) => {
   };
 };
 
-export { useLeaderboard };
 export default useLeaderboard;

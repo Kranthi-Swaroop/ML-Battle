@@ -18,7 +18,7 @@ const useWebSocket = (path, options = {}) => {
     onError,
     autoConnect = true,
     reconnect = true,
-    reconnectInterval = 10000, // Increased from 3s to 10s to reduce spam
+    reconnectInterval = 3000,
   } = options;
 
   const [isConnected, setIsConnected] = useState(false);

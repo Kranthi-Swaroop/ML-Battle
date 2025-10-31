@@ -7,15 +7,13 @@ import './App.css';
 // Components
 import Navbar from './components/Navbar';
 import Footer from './components/Footer';
-import ErrorBoundary from './components/ErrorBoundary';
-import LoadingSpinner from './components/LoadingSpinner';
 
 // Pages
 import Home from './pages/Home';
-import CompetitionList from './pages/CompetitionList';
-import CompetitionDetail from './pages/CompetitionDetail';
 import EventsPage from './pages/EventsPage';
 import EventDetail from './pages/EventDetail';
+import CompetitionList from './pages/CompetitionList';
+import CompetitionDetail from './pages/CompetitionDetail';
 import Profile from './pages/Profile';
 import Login from './pages/Login';
 import Register from './pages/Register';
@@ -25,7 +23,12 @@ const ProtectedRoute = ({ children }) => {
   const { isAuthenticated, loading } = useAuth();
   
   if (loading) {
-    return <LoadingSpinner message="Authenticating..." fullScreen />;
+    return (
+      <div className="loading-container">
+        <div className="spinner"></div>
+        <p>Loading...</p>
+      </div>
+    );
   }
   
   return isAuthenticated ? children : <Navigate to="/login" />;
@@ -33,13 +36,22 @@ const ProtectedRoute = ({ children }) => {
 
 function App() {
   return (
-    <ErrorBoundary>
-      <Router future={{ v7_startTransition: true, v7_relativeSplatPath: true }}>
-        <div className="app">
-          <Navbar />
-          <main className="main-content">
-            <Routes>
+    <Router>
+      <ClickSpark
+  sparkColor='#fff'
+  sparkSize={10}
+  sparkRadius={15}
+  sparkCount={8}
+  duration={400}
+>
+      <div className="app">
+        <Navbar />
+        <main className="main-content">
+          <Routes>
             <Route path="/" element={<Home />} />
+            <Route path="/events" element={<EventsPage />} />
+            <Route path="/events/:slug" element={<EventDetail />} />
+            <Route path="/competitions" element={<CompetitionList />} />
             <Route 
               path="/competitions/:id" 
               element={
@@ -48,8 +60,6 @@ function App() {
                 </ProtectedRoute>
               } 
             />
-            <Route path="/events" element={<EventsPage />} />
-            <Route path="/events/:slug" element={<EventDetail />} />
             <Route 
               path="/profile" 
               element={
@@ -67,7 +77,6 @@ function App() {
       </div>
       </ClickSpark>
     </Router>
-    </ErrorBoundary>
   );
 }
 

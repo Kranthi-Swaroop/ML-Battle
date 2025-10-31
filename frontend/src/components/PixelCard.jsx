@@ -129,6 +129,7 @@ export default function PixelCard({ variant = 'default', gap, speed, colors, noF
   const animationRef = useRef(null);
   const timePreviousRef = useRef(performance.now());
   const reducedMotion = useRef(window.matchMedia('(prefers-reduced-motion: reduce)').matches).current;
+  const isFeatureCard = useRef(className?.includes('feature-card')).current;
 
   const variantCfg = VARIANTS[variant] || VARIANTS.default;
   const finalGap = gap ?? variantCfg.gap;
@@ -211,13 +212,31 @@ export default function PixelCard({ variant = 'default', gap, speed, colors, noF
 
   useEffect(() => {
     initPixels();
+    
+    // Disable ResizeObserver for feature cards to prevent infinite loops
+    if (isFeatureCard) {
+      return () => {
+        cancelAnimationFrame(animationRef.current);
+      };
+    }
+    
+    // Setup ResizeObserver for other card types
+    let resizeTimer;
     const observer = new ResizeObserver(() => {
-      initPixels();
+      clearTimeout(resizeTimer);
+      resizeTimer = setTimeout(() => {
+        window.requestAnimationFrame(() => {
+          initPixels();
+        });
+      }, 150);
     });
+    
     if (containerRef.current) {
       observer.observe(containerRef.current);
     }
+    
     return () => {
+      clearTimeout(resizeTimer);
       observer.disconnect();
       cancelAnimationFrame(animationRef.current);
     };

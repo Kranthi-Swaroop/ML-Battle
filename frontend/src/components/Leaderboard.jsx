@@ -3,9 +3,6 @@ import { getRatingTier } from '../utils/constants';
 import './Leaderboard.css';
 
 const Leaderboard = ({ entries, loading, error, isConnected }) => {
-  // Ensure entries is an array
-  const leaderboardEntries = Array.isArray(entries) ? entries : [];
-
   if (loading) {
     return (
       <div className="leaderboard-container">
@@ -27,7 +24,7 @@ const Leaderboard = ({ entries, loading, error, isConnected }) => {
     );
   }
 
-  if (!leaderboardEntries || leaderboardEntries.length === 0) {
+  if (!entries || entries.length === 0) {
     return (
       <div className="leaderboard-container">
         <div className="empty-state">
@@ -91,12 +88,15 @@ const Leaderboard = ({ entries, loading, error, isConnected }) => {
           <thead>
             <tr>
               <th className="rank-column">Rank</th>
-              <th className="user-column">Name</th>
+              <th className="user-column">User</th>
+              <th className="rating-column">Rating</th>
               <th className="score-column">Score</th>
+              <th className="submissions-column">Submissions</th>
+              <th className="updated-column">Last Updated</th>
             </tr>
           </thead>
           <tbody>
-            {leaderboardEntries.map((entry) => (
+            {entries.map((entry) => (
               <tr 
                 key={entry.id} 
                 className={`leaderboard-row ${getRankClass(entry.rank)}`}
@@ -109,21 +109,35 @@ const Leaderboard = ({ entries, loading, error, isConnected }) => {
                 <td className="user-column">
                   <div className="user-info">
                     <div className="user-avatar">
-                      {(entry.display_name || entry.username || entry.kaggle_team_name || 'Unknown')?.charAt(0).toUpperCase()}
+                      {entry.user_username?.charAt(0).toUpperCase() || '?'}
                     </div>
                     <div className="user-details">
-                      <span className="user-name">
-                        {entry.display_name || entry.username || entry.kaggle_team_name || 'Unknown'}
-                      </span>
-                      {!entry.user && entry.kaggle_team_name && (
-                        <span className="kaggle-badge">Kaggle</span>
-                      )}
+                      <span className="user-name">{entry.user_username || 'Unknown'}</span>
+                      {entry.user_elo_rating && getTierBadge(entry.user_elo_rating)}
                     </div>
                   </div>
                 </td>
+                <td className="rating-column">
+                  <span className="rating-value">
+                    {entry.user_elo_rating || 1500}
+                  </span>
+                </td>
                 <td className="score-column">
                   <span className="score-value">
-                    {entry.best_score || entry.score ? parseFloat(entry.best_score || entry.score).toFixed(4) : 'N/A'}
+                    {entry.score ? parseFloat(entry.score).toFixed(4) : 'N/A'}
+                  </span>
+                </td>
+                <td className="submissions-column">
+                  <span className="submissions-value">
+                    {entry.submissions_count || 0}
+                  </span>
+                </td>
+                <td className="updated-column">
+                  <span className="updated-value">
+                    {entry.last_submission_date 
+                      ? new Date(entry.last_submission_date).toLocaleDateString()
+                      : 'N/A'
+                    }
                   </span>
                 </td>
               </tr>

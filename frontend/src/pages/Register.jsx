@@ -68,21 +68,19 @@ const Register = () => {
       return;
     }
 
-    const userData = {
-      username: formData.username,
-      email: formData.email,
-      password: formData.password,
-      password_confirm: formData.confirmPassword,
-      kaggle_username: formData.kaggle_username || undefined
-    };
+    try {
+      const userData = {
+        username: formData.username,
+        email: formData.email,
+        password: formData.password,
+        kaggle_username: formData.kaggle_username || undefined
+      };
 
-    const result = await register(userData);
-    
-    if (result.success) {
+      await register(userData);
       navigate('/competitions');
-    } else {
-      console.error('Registration error:', result.error);
-      const errorData = result.error;
+    } catch (err) {
+      console.error('Registration error:', err);
+      const errorData = err.response?.data;
       
       if (errorData) {
         const newErrors = {};

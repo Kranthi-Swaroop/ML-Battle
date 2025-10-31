@@ -106,7 +106,7 @@ export const AuthProvider = ({ children }) => {
   };
 
   const isAdmin = () => {
-    return user && (user.is_staff || user.is_superuser);
+    return user?.is_staff === true || user?.is_superuser === true;
   };
 
   const value = {
@@ -117,6 +117,7 @@ export const AuthProvider = ({ children }) => {
     register,
     logout,
     updateUser,
+    demoLogin,
     isAdmin,
   };
 

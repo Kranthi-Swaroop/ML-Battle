@@ -1,11 +1,13 @@
 import React, { useEffect, useState } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { useAuth } from '../hooks/useAuth';
 import { competitionEventsAPI } from '../services/api';
+import LiquidEther from '../components/LiquidEther';
 import './Home.css';
 
 const Home = () => {
   const { isAuthenticated, user } = useAuth();
+  const navigate = useNavigate();
   const [featuredEvents, setFeaturedEvents] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
@@ -18,11 +20,13 @@ const Home = () => {
     try {
       setLoading(true);
       const response = await competitionEventsAPI.getFeatured();
-      setFeaturedEvents(response.data.results || response.data);
+      const events = response.data.results || response.data;
+      setFeaturedEvents(events.slice(0, 3)); // Show only 3 featured events
       setError(null);
     } catch (err) {
-      console.error('Error fetching events:', err);
-      setError('Failed to load events');
+      console.error('Error fetching featured events:', err);
+      setError(null); // Don't show error, just show empty state
+      setFeaturedEvents([]);
     } finally {
       setLoading(false);
     }
@@ -67,14 +71,14 @@ const Home = () => {
                   <Link to="/register" className="btn btn-primary btn-lg">
                     Get Started
                   </Link>
-                  <Link to="/events" className="btn btn-secondary btn-lg">
-                    Browse Events
+                  <Link to="/competitions" className="btn btn-secondary btn-lg">
+                    Browse Competitions
                   </Link>
                 </>
               ) : (
                 <>
-                  <Link to="/events" className="btn btn-primary btn-lg">
-                    View Events
+                  <Link to="/competitions" className="btn btn-primary btn-lg">
+                    View Competitions
                   </Link>
                   <Link to="/profile" className="btn btn-secondary btn-lg">
                     My Profile
@@ -118,59 +122,59 @@ const Home = () => {
         <div className="container">
           <h2 className="section-title">Why MLBattle?</h2>
           <div className="features-grid">
-            <PixelCard variant="blue" className="feature-card">
+            <div className="feature-card">
               <div className="feature-icon">🔗</div>
               <h3 className="feature-title">Kaggle Integration</h3>
               <p className="feature-description">
                 Seamlessly sync your Kaggle submissions and track your progress
                 across all competitions in one place.
               </p>
-            </PixelCard>
+            </div>
 
-            <PixelCard variant="pink" className="feature-card">
+            <div className="feature-card">
               <div className="feature-icon">📊</div>
               <h3 className="feature-title">Real-time Leaderboards</h3>
               <p className="feature-description">
                 Watch live updates as competitors submit and climb the rankings
                 with WebSocket-powered leaderboards.
               </p>
-            </PixelCard>
+            </div>
 
-            <PixelCard variant="yellow" className="feature-card">
+            <div className="feature-card">
               <div className="feature-icon">🎮</div>
               <h3 className="feature-title">ELO Rating System</h3>
               <p className="feature-description">
                 Track your skill progression with our dynamic ELO rating system
                 that adapts to competition size and difficulty.
               </p>
-            </PixelCard>
+            </div>
 
-            <PixelCard variant="blue" className="feature-card">
+            <div className="feature-card">
               <div className="feature-icon">📈</div>
               <h3 className="feature-title">Progress Analytics</h3>
               <p className="feature-description">
                 Visualize your rating history, submission trends, and competition
                 performance with detailed charts and graphs.
               </p>
-            </PixelCard>
+            </div>
 
-            <PixelCard variant="pink" className="feature-card">
+            <div className="feature-card">
               <div className="feature-icon">🏅</div>
               <h3 className="feature-title">Tier System</h3>
               <p className="feature-description">
                 Climb through ranks from Novice to Grandmaster as you improve
                 your machine learning skills and compete.
               </p>
-            </PixelCard>
+            </div>
 
-            <PixelCard variant="yellow" className="feature-card">
+            <div className="feature-card">
               <div className="feature-icon">👥</div>
               <h3 className="feature-title">Community</h3>
               <p className="feature-description">
                 Join a vibrant community of data scientists and machine learning
                 enthusiasts passionate about competition.
               </p>
-            </PixelCard>
+            </div>
           </div>
         </div>
       </section>
@@ -194,37 +198,51 @@ const Home = () => {
             <div className="alert alert-error">{error}</div>
           ) : featuredEvents.length === 0 ? (
             <div className="empty-state">
-              <div className="empty-state-icon">🏆</div>
+              <div className="empty-state-icon">�</div>
               <h3 className="empty-state-title">No Featured Events</h3>
               <p className="empty-state-description">
-                Check back soon for new events to join!
+                Check back soon for exciting competition events!
               </p>
             </div>
           ) : (
-            <div className="competitions-grid">
-              {featuredEvents.slice(0, 3).map((event) => (
-                <Link key={event.id} to={`/events/${event.slug}`} className="event-card-link">
-                  <div className="event-card-home">
-                    {event.banner_image && (
-                      <div className="event-card-banner">
-                        <img src={event.banner_image} alt={event.title} />
-                      </div>
-                    )}
-                    <div className="event-card-content">
+            <div className="competitions-grid events-grid-home">
+              {featuredEvents.map((event) => (
+                <div 
+                  key={event.id} 
+                  className="event-card event-card-home"
+                  onClick={() => navigate(`/events/${event.slug}`)}
+                >
+                  {event.banner_image && (
+                    <div className="event-banner">
+                      <img src={event.banner_image} alt={event.title} />
+                    </div>
+                  )}
+                  <div className="event-card-content">
+                    <div className="event-header">
                       <h3>{event.title}</h3>
-                      <p className="event-card-desc">
-                        {event.description?.substring(0, 100)}...
-                      </p>
-                      <div className="event-card-meta">
-                        <span>🏆 {event.total_prize_pool || 'TBD'}</span>
-                        <span>📊 {event.competition_count || 0} competitions</span>
-                      </div>
-                      <span className={`event-status-badge status-${event.status}`}>
+                      <span className={`badge badge-${event.status}`}>
                         {event.status}
                       </span>
                     </div>
+                    <p className="event-description">
+                      {event.description?.substring(0, 120)}...
+                    </p>
+                    <div className="event-meta">
+                      {event.organizer && (
+                        <span>👥 {event.organizer}</span>
+                      )}
+                      {event.total_prize_pool && (
+                        <span>🏆 {event.total_prize_pool}</span>
+                      )}
+                      <span>📊 {event.competition_count} competitions</span>
+                    </div>
+                    <div className="event-dates">
+                      <span>📅 {new Date(event.start_date).toLocaleDateString()}</span>
+                      <span>→</span>
+                      <span>{new Date(event.end_date).toLocaleDateString()}</span>
+                    </div>
                   </div>
-                </Link>
+                </div>
               ))}
             </div>
           )}
