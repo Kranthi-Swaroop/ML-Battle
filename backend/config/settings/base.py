@@ -73,18 +73,12 @@ TEMPLATES = [
 WSGI_APPLICATION = 'config.wsgi.application'
 ASGI_APPLICATION = 'config.asgi.application'
 
-# Database - MongoDB with djongo
+# Database - SQLite (temporary, for quick startup)
+# TODO: Switch back to MongoDB with proper djongo setup
 DATABASES = {
     'default': {
-        'ENGINE': 'djongo',
-        'NAME': config('DB_NAME', default='mlbattle'),
-        'ENFORCE_SCHEMA': False,
-        'CLIENT': {
-            'host': config('MONGO_HOST', default='localhost'),
-            'port': int(config('MONGO_PORT', default=27017)),
-            'username': config('MONGO_USER', default=None),
-            'password': config('MONGO_PASSWORD', default=None),
-        }
+        'ENGINE': 'django.db.backends.sqlite3',
+        'NAME': BASE_DIR / 'db.sqlite3',
     }
 }
 

@@ -5,18 +5,38 @@ from apps.users.serializers import UserLeaderboardSerializer
 
 class LeaderboardEntrySerializer(serializers.ModelSerializer):
     """Serializer for LeaderboardEntry model."""
-    user = UserLeaderboardSerializer(read_only=True)
-    username = serializers.CharField(source='user.username', read_only=True)
-    elo_rating = serializers.IntegerField(source='user.elo_rating', read_only=True)
-    rating_tier = serializers.CharField(source='user.rating_tier', read_only=True)
+    user = UserLeaderboardSerializer(read_only=True, allow_null=True)
+    username = serializers.SerializerMethodField()
+    elo_rating = serializers.SerializerMethodField()
+    rating_tier = serializers.SerializerMethodField()
+    display_name = serializers.SerializerMethodField()
 
     class Meta:
         model = LeaderboardEntry
         fields = [
-            'id', 'user', 'username', 'elo_rating', 'rating_tier',
-            'best_score', 'rank', 'submissions_count', 'last_submission_time'
+            'id', 'user', 'username', 'display_name', 'elo_rating', 'rating_tier',
+            'best_score', 'score', 'rank', 'submissions_count', 'last_submission_time',
+            'kaggle_team_name', 'submission_date'
         ]
         read_only_fields = ['id']
+    
+    def get_username(self, obj):
+        """Get username or return None if user is None."""
+        return obj.user.username if obj.user else None
+    
+    def get_elo_rating(self, obj):
+        """Get elo rating or return None if user is None."""
+        return obj.user.elo_rating if obj.user else None
+    
+    def get_rating_tier(self, obj):
+        """Get rating tier or return None if user is None."""
+        return obj.user.rating_tier if obj.user else None
+    
+    def get_display_name(self, obj):
+        """Get display name - username for platform users, kaggle_team_name for Kaggle-only participants."""
+        if obj.user:
+            return obj.user.username
+        return obj.kaggle_team_name or 'Unknown'
 
 
 class LeaderboardUpdateSerializer(serializers.Serializer):

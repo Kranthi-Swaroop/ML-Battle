@@ -75,6 +75,10 @@ export const AuthProvider = ({ children }) => {
     auth.setCurrentUser(userData);
   };
 
+  const isAdmin = () => {
+    return user && (user.is_staff || user.is_superuser);
+  };
+
   const value = {
     user,
     isAuthenticated,
@@ -83,6 +87,7 @@ export const AuthProvider = ({ children }) => {
     register,
     logout,
     updateUser,
+    isAdmin,
   };
 
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;

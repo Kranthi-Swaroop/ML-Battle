@@ -23,11 +23,16 @@ class LeaderboardConsumer(AsyncWebsocketConsumer):
         await self.accept()
         
         # Send initial leaderboard data
-        leaderboard_data = await self.get_leaderboard_data()
-        await self.send(text_data=json.dumps({
-            'type': 'leaderboard_init',
-            'data': leaderboard_data
-        }))
+        try:
+            leaderboard_data = await self.get_leaderboard_data()
+            await self.send(text_data=json.dumps({
+                'type': 'leaderboard_init',
+                'data': leaderboard_data
+            }))
+        except Exception as e:
+            # Connection might have closed before we could send
+            # This is normal for rapid reconnects, just log and ignore
+            print(f"Could not send initial data: {e}")
     
     async def disconnect(self, close_code):
         """Handle WebSocket disconnection."""
@@ -66,7 +71,7 @@ class LeaderboardConsumer(AsyncWebsocketConsumer):
         
         entries = LeaderboardEntry.objects.filter(
             competition_id=self.competition_id
-        ).select_related('user').order_by('rank')[:100]  # Top 100
+        ).select_related('user').order_by('rank')  # All entries
         
         serializer = LeaderboardEntrySerializer(entries, many=True)
         return {
@@ -89,10 +94,10 @@ def send_leaderboard_update(competition_id):
     
     channel_layer = get_channel_layer()
     
-    # Fetch updated leaderboard data
+    # Fetch updated leaderboard data - all entries
     entries = LeaderboardEntry.objects.filter(
         competition_id=competition_id
-    ).select_related('user').order_by('rank')[:100]
+    ).select_related('user').order_by('rank')
     
     serializer = LeaderboardEntrySerializer(entries, many=True)
     
