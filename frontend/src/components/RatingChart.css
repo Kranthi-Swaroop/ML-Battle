@@ -1,0 +1,121 @@
+.rating-chart-container {
+  background-color: var(--bg-primary);
+  border-radius: var(--border-radius-lg);
+  padding: var(--spacing-lg);
+  box-shadow: var(--shadow-sm);
+  border: 1px solid var(--border-color);
+}
+
+.rating-chart-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: var(--spacing-lg);
+}
+
+.rating-chart-title {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-sm);
+  font-size: 1.5rem;
+  font-weight: 600;
+  margin: 0;
+  color: var(--text-primary);
+}
+
+.chart-icon {
+  font-size: 1.75rem;
+}
+
+.current-tier-badge {
+  padding: 6px 16px;
+  border-radius: 9999px;
+  font-size: 0.875rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.rating-stats {
+  display: grid;
+  grid-template-columns: repeat(5, 1fr);
+  gap: var(--spacing-md);
+  margin-bottom: var(--spacing-xl);
+}
+
+.rating-stat {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: var(--spacing-md);
+  background-color: var(--bg-secondary);
+  border-radius: var(--border-radius);
+  gap: var(--spacing-xs);
+}
+
+.rating-stat .stat-label {
+  font-size: 0.75rem;
+  color: var(--text-secondary);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.rating-stat .stat-value {
+  font-size: 1.5rem;
+  font-weight: 700;
+  color: var(--text-primary);
+}
+
+.rating-stat .stat-value.positive {
+  color: var(--success-color);
+}
+
+.rating-stat .stat-value.negative {
+  color: var(--danger-color);
+}
+
+.rating-chart-wrapper {
+  height: 400px;
+  position: relative;
+}
+
+/* Mobile Responsive */
+@media (max-width: 1024px) {
+  .rating-stats {
+    grid-template-columns: repeat(3, 1fr);
+  }
+
+  .rating-chart-wrapper {
+    height: 350px;
+  }
+}
+
+@media (max-width: 768px) {
+  .rating-chart-header {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: var(--spacing-md);
+  }
+
+  .rating-stats {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  .rating-chart-wrapper {
+    height: 300px;
+  }
+
+  .rating-stat .stat-value {
+    font-size: 1.25rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .rating-stats {
+    grid-template-columns: 1fr;
+  }
+
+  .rating-chart-wrapper {
+    height: 250px;
+  }
+}

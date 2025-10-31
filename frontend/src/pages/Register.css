@@ -1,0 +1,44 @@
+/* Import base auth styles */
+@import './Login.css';
+
+/* Additional styles specific to Register page */
+
+.form-hint {
+  display: block;
+  font-size: 0.75rem;
+  color: var(--text-tertiary);
+  margin-top: var(--spacing-xs);
+  font-style: italic;
+}
+
+/* Override auth container for register page with reversed layout */
+.auth-container {
+  grid-template-columns: 1fr 1fr;
+}
+
+/* Ensure proper order on larger screens */
+@media (min-width: 769px) {
+  .auth-card {
+    order: 2;
+  }
+  
+  .auth-side {
+    order: 1;
+  }
+}
+
+/* Additional responsive adjustments */
+@media (max-width: 768px) {
+  .auth-container {
+    grid-template-columns: 1fr;
+  }
+
+  .auth-card {
+    order: 1;
+  }
+
+  .auth-side {
+    order: 2;
+    display: none;
+  }
+}

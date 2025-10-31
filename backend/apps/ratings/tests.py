@@ -1,0 +1,1 @@
+# Rating app tests
