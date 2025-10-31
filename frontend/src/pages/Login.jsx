@@ -6,7 +6,7 @@ import './Login.css';
 const Login = () => {
   const navigate = useNavigate();
   const location = useLocation();
-  const { login, loading } = useAuth();
+  const { login, demoLogin, loading } = useAuth();
 
   const [formData, setFormData] = useState({
     username: '',
@@ -41,6 +41,12 @@ const Login = () => {
       console.error('Login error:', result.error);
       setError(result.error?.detail || 'Invalid username or password');
     }
+  };
+
+  const handleDemoLogin = () => {
+    setError('');
+    demoLogin();
+    navigate(from, { replace: true });
   };
 
   return (
@@ -103,6 +109,19 @@ const Login = () => {
               {loading ? 'Logging in...' : 'Log In'}
             </button>
           </form>
+
+          <div className="demo-login-section">
+            <div className="divider">
+              <span>OR</span>
+            </div>
+            <button 
+              type="button"
+              onClick={handleDemoLogin}
+              className="btn btn-demo btn-block"
+            >
+              🎮 Try Demo Account
+            </button>
+          </div>
 
           <div className="auth-footer">
             <p className="auth-footer-text">

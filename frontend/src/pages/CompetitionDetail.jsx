@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { useParams, Link } from 'react-router-dom';
 import { competitionsAPI } from '../services/api';
-import { useLeaderboard } from '../hooks/useLeaderboard';
+import useLeaderboard from '../hooks/useLeaderboard';
 import { useAuth } from '../hooks/useAuth';
 import Leaderboard from '../components/Leaderboard';
 import { formatDate, getTimeRemaining } from '../utils/helpers';

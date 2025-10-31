@@ -1,6 +1,7 @@
 import React from 'react';
 import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
 import { useAuth } from './hooks/useAuth';
+import ClickSpark from './components/ClickSpark';
 import './App.css';
 
 // Components
@@ -64,6 +65,7 @@ function App() {
         </main>
         <Footer />
       </div>
+      </ClickSpark>
     </Router>
     </ErrorBoundary>
   );

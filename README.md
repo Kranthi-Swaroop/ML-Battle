@@ -17,7 +17,7 @@ MLBattle is a comprehensive web-based platform designed to host machine learning
 
 **Backend:**
 - Django 4.2 + Django REST Framework
-- PostgreSQL (Database)
+- MongoDB (Database with djongo)
 - Redis (Cache & Message Broker)
 - Celery (Background Tasks)
 - Django Channels (WebSockets)
@@ -34,7 +34,7 @@ MLBattle is a comprehensive web-based platform designed to host machine learning
 
 - Python 3.10+
 - Node.js 16+
-- PostgreSQL 14+
+- MongoDB 6.0+
 - Redis Server
 - Kaggle API credentials
 
@@ -64,11 +64,13 @@ cp .env.example .env
 # Edit .env with your configuration
 ```
 
-5. **Setup PostgreSQL database:**
+5. **Start MongoDB:**
 ```powershell
-psql -U postgres
-CREATE DATABASE mlbattle;
-\q
+# Check if MongoDB is running
+Get-Service MongoDB
+
+# Start if not running
+net start MongoDB
 ```
 
 6. **Run migrations:**
@@ -82,27 +84,34 @@ python manage.py migrate
 python manage.py createsuperuser
 ```
 
-8. **Start services (4 terminals needed):**
+8. **Start services (5 terminals needed):**
 
 **Terminal 1 - Django:**
 ```powershell
 python manage.py runserver
 ```
 
-**Terminal 2 - Celery Worker:**
+**Terminal 2 - Daphne (WebSocket):**
+```powershell
+daphne -p 8001 config.asgi:application
+```
+
+**Terminal 3 - Celery Worker:**
 ```powershell
 celery -A config worker -l info --pool=solo
 ```
 
-**Terminal 3 - Celery Beat:**
+**Terminal 4 - Celery Beat:**
 ```powershell
 celery -A config beat -l info
 ```
 
-**Terminal 4 - Redis:**
+**Terminal 5 - Redis:**
 ```powershell
 redis-server
 ```
+
+> **Note:** See **START_HERE.md** for detailed 5-terminal startup guide!
 
 ### Frontend Setup
 
@@ -309,8 +318,10 @@ npm test
 SECRET_KEY=your-secret-key
 DEBUG=True
 DB_NAME=mlbattle
-DB_USER=postgres
-DB_PASSWORD=your-password
+MONGO_HOST=localhost
+MONGO_PORT=27017
+# MONGO_USER=          # Optional for development
+# MONGO_PASSWORD=      # Optional for development
 REDIS_URL=redis://localhost:6379/0
 KAGGLE_USERNAME=your-kaggle-username
 KAGGLE_KEY=your-kaggle-api-key
@@ -324,18 +335,23 @@ REACT_APP_API_URL=http://localhost:8000/api
 REACT_APP_WS_URL=ws://localhost:8000/ws
 ```
 
-## 📝 Next Steps
+## � Quick Start
 
-1. **Complete Frontend UI Components** - Create all React components and pages
-2. **Implement Styling** - Add CSS for responsive design
-3. **Add Form Validation** - Client-side validation for forms
-4. **Implement Error Handling** - User-friendly error messages
-5. **Add Loading States** - Skeleton screens and spinners
-6. **Implement Filtering** - Competition filters and search
-7. **Add Pagination** - For long lists
-8. **Chart.js Integration** - Rating graphs
-9. **Testing** - Unit and integration tests
-10. **Deployment** - Production setup
+**New to the project?** Follow these guides in order:
+
+1. **[START_HERE.md](START_HERE.md)** ⭐ - Complete setup guide with 5-terminal instructions
+2. **[MONGODB_SETUP.md](MONGODB_SETUP.md)** - Detailed MongoDB installation guide
+3. **[MONGODB_MIGRATION.md](MONGODB_MIGRATION.md)** - Why MongoDB? Migration details
+4. **[PROJECT_COMPLETE.md](PROJECT_COMPLETE.md)** - Full feature list
+
+## 📚 Documentation
+
+- **[SETUP_GUIDE.md](SETUP_GUIDE.md)** - Detailed setup instructions
+- **[DEPLOYMENT_GUIDE.md](DEPLOYMENT_GUIDE.md)** - Production deployment
+- **[ARCHITECTURE.md](ARCHITECTURE.md)** - System architecture diagrams
+- **[DOCUMENTATION_INDEX.md](DOCUMENTATION_INDEX.md)** - All documentation index
+- **[backend/README.md](backend/README.md)** - Backend API documentation
+- **[frontend/README.md](frontend/README.md)** - Frontend component examples
 
 ## 🤝 Contributing
 

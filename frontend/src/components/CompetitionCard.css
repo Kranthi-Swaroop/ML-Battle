@@ -1,18 +1,82 @@
 .competition-card {
-  background-color: var(--bg-primary);
+  background: rgba(255, 255, 255, 0.05);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
   border-radius: var(--border-radius-lg);
   padding: var(--spacing-lg);
-  box-shadow: var(--shadow-sm);
-  border: 1px solid var(--border-color);
-  transition: all var(--transition-base);
+  box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.15);
+  border: 1px solid rgba(255, 255, 255, 0.18);
+  transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
   display: flex;
   flex-direction: column;
   height: 100%;
+  position: relative;
+  overflow: hidden;
+}
+
+/* Rotating gradient border effect */
+.competition-card::before {
+  content: '';
+  position: absolute;
+  top: -50%;
+  left: -50%;
+  width: 200%;
+  height: 200%;
+  background: conic-gradient(
+    from 0deg at 50% 50%,
+    transparent 0deg,
+    rgba(6, 182, 212, 0.4) 90deg,
+    rgba(168, 85, 247, 0.4) 180deg,
+    rgba(249, 115, 22, 0.4) 270deg,
+    transparent 360deg
+  );
+  opacity: 0;
+  transition: opacity 0.4s ease;
+  pointer-events: none;
+  animation: rotate-border 6s linear infinite;
+}
+
+@keyframes rotate-border {
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(360deg);
+  }
+}
+
+/* Inner background to mask the border effect */
+.competition-card::after {
+  content: '';
+  position: absolute;
+  inset: 2px;
+  background: rgba(15, 23, 42, 0.95);
+  border-radius: calc(var(--border-radius-lg) - 2px);
+  z-index: 0;
+  transition: background 0.4s ease;
+}
+
+/* Ensure content is above the effect layers */
+.competition-card > * {
+  position: relative;
+  z-index: 1;
 }
 
 .competition-card:hover {
-  box-shadow: var(--shadow-lg);
-  transform: translateY(-4px);
+  transform: translateY(-10px) scale(1.01);
+  box-shadow: 
+    0 0 30px rgba(6, 182, 212, 0.3),
+    0 0 50px rgba(168, 85, 247, 0.2),
+    0 15px 35px rgba(0, 0, 0, 0.4);
+  border: 1px solid rgba(6, 182, 212, 0.4);
+}
+
+.competition-card:hover::before {
+  opacity: 1;
+}
+
+.competition-card:hover::after {
+  background: rgba(15, 23, 42, 0.85);
 }
 
 .competition-card-header {
@@ -72,8 +136,17 @@
   align-items: center;
   gap: var(--spacing-sm);
   padding: var(--spacing-sm);
-  background-color: var(--bg-secondary);
+  background: rgba(255, 255, 255, 0.03);
+  backdrop-filter: blur(5px);
+  -webkit-backdrop-filter: blur(5px);
   border-radius: var(--border-radius);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  transition: all var(--transition-fast);
+}
+
+.stat-item:hover {
+  background: rgba(255, 255, 255, 0.08);
+  border: 1px solid rgba(255, 255, 255, 0.2);
 }
 
 .stat-icon {
@@ -102,8 +175,11 @@
   display: flex;
   justify-content: space-between;
   padding: var(--spacing-md);
-  background-color: var(--bg-secondary);
+  background: rgba(255, 255, 255, 0.03);
+  backdrop-filter: blur(5px);
+  -webkit-backdrop-filter: blur(5px);
   border-radius: var(--border-radius);
+  border: 1px solid rgba(255, 255, 255, 0.1);
   gap: var(--spacing-md);
 }
 
@@ -132,14 +208,14 @@
   justify-content: center;
   gap: var(--spacing-sm);
   padding: var(--spacing-md);
-  background: linear-gradient(135deg, rgba(37, 99, 235, 0.1), rgba(16, 185, 129, 0.1));
+  background: linear-gradient(135deg, rgba(6, 182, 212, 0.15), rgba(16, 185, 129, 0.15));
   border-radius: var(--border-radius);
-  border-left: 3px solid var(--success-color);
+  border-left: 3px solid var(--primary-color);
 }
 
 .competition-card-countdown.upcoming {
-  background: linear-gradient(135deg, rgba(245, 158, 11, 0.1), rgba(251, 191, 36, 0.1));
-  border-left-color: var(--warning-color);
+  background: linear-gradient(135deg, rgba(168, 85, 247, 0.15), rgba(249, 115, 22, 0.15));
+  border-left-color: var(--accent-color);
 }
 
 .countdown-icon {

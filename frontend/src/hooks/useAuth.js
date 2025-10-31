@@ -47,6 +47,36 @@ export const AuthProvider = ({ children }) => {
     }
   };
 
+  const demoLogin = () => {
+    // Demo user data
+    const demoUser = {
+      id: 1,
+      username: 'demo_user',
+      email: 'demo@mlbattle.com',
+      first_name: 'Demo',
+      last_name: 'User',
+      elo_rating: 1842,
+      highest_rating: 1956,
+      competitions_participated: 12,
+      submissions_count: 45,
+      tier: 'Expert',
+      bio: 'Passionate ML enthusiast exploring cutting-edge algorithms!',
+      github_username: 'demo_user',
+      linkedin_url: 'https://linkedin.com/in/demo',
+      kaggle_username: 'demouser',
+      date_joined: '2024-06-15T10:30:00Z',
+      avatar_url: null
+    };
+
+    // Set demo tokens (these won't work with real API but allow navigation)
+    auth.setTokens('demo-access-token', 'demo-refresh-token');
+    auth.setCurrentUser(demoUser);
+    setUser(demoUser);
+    setIsAuthenticated(true);
+
+    return { success: true };
+  };
+
   const register = async (userData) => {
     try {
       const response = await authAPI.register(userData);
