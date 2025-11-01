@@ -1,1 +1,0 @@
-# Utils app initialization

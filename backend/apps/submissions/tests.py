@@ -1,1 +1,0 @@
-# Submission app tests
